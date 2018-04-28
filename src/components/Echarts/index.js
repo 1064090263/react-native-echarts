@@ -3,8 +3,6 @@ import { WebView, View, StyleSheet, Platform } from 'react-native';
 import renderChart from './renderChart';
 import echarts from './echarts.min';
 
-var sourceUrl;
-
 export default class App extends Component {
 
 
@@ -12,11 +10,6 @@ export default class App extends Component {
     constructor(props) {
         super(props);
         this.setNewOption = this.setNewOption.bind(this);
-        if(Platform.OS !== 'ios'){
-            sourceUrl={{uri: 'file:///android_asset/tpl.html'}}
-        }else{
-            sourceUrl={require('./tpl.html')
-        }
     }
 
 
@@ -43,7 +36,7 @@ export default class App extends Component {
                 backgroundColor: this.props.backgroundColor || 'transparent'
         }}
         scalesPageToFit={Platform.OS !== 'ios'}
-        source=sourceUrl
+        source={Platform.OS !== 'ios'? {uri: 'file:///android_asset/tpl.html'}:require('./tpl.html')}
         onMessage={event => this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null}
     />
     </View>
