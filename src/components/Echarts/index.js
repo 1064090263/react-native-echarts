@@ -5,38 +5,43 @@ import echarts from './echarts.min';
 
 export default class App extends Component {
 
-  constructor(props) {
-    super(props);
-    this.setNewOption = this.setNewOption.bind(this);
-  }
-  
-
-  componentWillReceiveProps(nextProps) {
-    if(nextProps.option !== this.props.option) {
-      this.refs.chart.reload();
+    constructor(props) {
+        super(props);
+        this.setNewOption = this.setNewOption.bind(this);
     }
-  }
 
-  setNewOption(option) {
-    this.refs.chart.postMessage(JSON.stringify(option));
-  }
 
-  render() {
-    return (
-      <View style={{flex: 1, height: this.props.height || 400,}}>
-        <WebView
-          ref="chart"
-          scrollEnabled = {false}
-          injectedJavaScript = {renderChart(this.props)}
-          style={{
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.option !== this.props.option) {
+            // this.refs.chart.reload();
+            this.refs.chart.injectJavaScript(renderChart(nextProps, false));
+        }
+    }
+
+    setNewOption(option) {
+        this.refs.chart.postMessage(JSON.stringify(option));
+    }
+
+    render() {
+        return (
+            <View style={{flex: 1, height: this.props.height || 400,}}>
+    <WebView
+        ref="chart"
+        scrollEnabled = {false}
+        injectedJavaScript = {renderChart(this.props)}
+        style={{
             height: this.props.height || 400,
-            backgroundColor: this.props.backgroundColor || 'transparent'
-          }}
-          scalesPageToFit={Platform.OS !== 'ios'}
-          source={require('./tpl.html')}
-          onMessage={event => this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null}
-        />
-      </View>
+                backgroundColor: this.props.backgroundColor || 'transparent'
+        }}
+        scalesPageToFit={Platform.OS !== 'ios'}
+        if(Platform.OS !== 'ios'){
+                source={{uri: 'file:///android_asset/tpl.html'}}
+        }else{
+            source={require('./tpl.html')
+        }
+        onMessage={event => this.props.onPress ? this.props.onPress(JSON.parse(event.nativeEvent.data)) : null}
+    />
+    </View>
     );
-  }
+    }
 }
