@@ -13,13 +13,28 @@ export default class App extends Component {
     }
 
 
-    componentWillReceiveProps(nextProps) {
+    shouldComponentUpdate(nextProps, nextState) {
+        const thisProps = this.props || {}
+        nextProps = nextProps || {}
+        if (Object.keys(thisProps).length !== Object.keys(nextProps).length) {
+            return true
+        }
+        for (const key in nextProps) {
+            if (JSON.stringify(thisProps[key]) != JSON.stringify(nextProps[key])) {
+                // console.log('props', key, thisProps[key], nextProps[key])
+                return true
+            }
+        }
+        return false
+    }
+
+    componentDidUpdate(nextProps) {
         if(nextProps.option !== this.props.option) {
             // this.refs.chart.reload();
             this.refs.chart.injectJavaScript(renderChart(nextProps, false));
         }
     }
-
+    
     setNewOption(option) {
         this.refs.chart.postMessage(JSON.stringify(option));
     }
