@@ -28,7 +28,7 @@ export default class App extends Component {
         return false
     }
 
-    componentDidUpdate(nextProps) {
+    componentWillReceiveProps(nextProps) {
         if(nextProps.option !== this.props.option) {
             // this.refs.chart.reload();
             this.refs.chart.injectJavaScript(renderChart(nextProps, false));
