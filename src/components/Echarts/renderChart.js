@@ -11,6 +11,19 @@ export default function renderChart(props, isFirst=true) {
       document.getElementById('main').style.width = "${width}";
       myChart = echarts.init(document.getElementById('main'));
       myChart.setOption(${toString(props.option)});
+      myChart.on('click', function(params) {
+      var seen = [];
+      var paramsString = JSON.stringify(params, function(key, val) {
+        if (val != null && typeof val == "object") {
+          if (seen.indexOf(val) >= 0) {
+            return;
+          }
+          seen.push(val);
+        }
+        return val;
+      });
+      window.postMessage(JSON.stringify(paramsString));
+    });
     `
     } else {
         return `
